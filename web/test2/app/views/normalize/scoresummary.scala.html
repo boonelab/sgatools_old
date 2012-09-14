@@ -1,0 +1,25 @@
+@(sj: ScoreJob)
+@import helper.twitterBootstrap._
+
+@main(Html("Scoring complete!"), nav = "scoresubmitted") {
+
+
+<legend>Job summary</legend>
+<div style="padding-bottom:20px">
+<table class="condensed-table">
+<tr>
+<td style="border-top:0px"><b>Elapsed time:</b></td>
+<td style="border-top:0px">@sj.summary_timeElapsed</td>
+</tr>
+<tr>
+<td><b>Plate files:</b></td>
+<td>@sj.summary_plateFiles</td>
+</tr>
+</table>
+</div>
+<legend>Actions</legend>
+
+<a class="btn btn-success" href="@routes.Assets.at(sj.outputPath)"><i class="icon-download-alt icon-white"></i> Download results</a>
+<a class="btn" href="@routes.ScoreController.blankScoreForm"><i class="icon-repeat"></i> Start over</a>
+}
+

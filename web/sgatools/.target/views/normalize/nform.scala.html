@@ -1,0 +1,112 @@
+@(normalizationForm: Form[SGAToolsJob])
+@import helper._
+@import helper.twitterBootstrap._
+@implicitFieldConstructor = @{ FieldConstructor(help.twitterBootstrapInput.f) }
+
+@title = {
+    Low-throughput normalization of colony sizes
+}
+
+@topbar = {}
+
+@main(title, topbar, nav="normalize") {
+    
+	@helper.form(action = routes.NormalizationController.submit, 'enctype -> "multipart/form-data", 'id -> "normalizationForm", 'class->"form-horizontal") {
+		<fieldset>
+			
+            @helper.input(normalizationForm("sgafiles"), '_label -> "SGA formatted file(s)", 'uploadwidget->"") { (id, name, value, args) =>
+    			<div class="fileupload fileupload-new" data-provides="fileupload" style="margin: 0 0 0 0; padding: 0 0 0 0;">
+					<div class="fileupload-preview uneditable-input" style="width:200px;"></div>
+						<span class="btn btn-file"><span class="fileupload-new">Select file</span>
+						<span class="fileupload-exists">Change</span><input id="@id" name="@name" multiple type="file" name="mainfile"/></span>
+						<a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+				</div>
+			} 
+			<h5>Options</h5>
+			
+           
+            @helper.input(
+           		normalizationForm("control_borders"),
+           		'_label -> "Control borders",
+           		'_showConstraints -> false,
+                'class->"input-large"
+           	){ (id, name, value, args) =>
+           	
+           		<select id="@id" name="@name">
+           			<option @if(normalizationForm.get.control_borders == 1){selected=selected})">1</option>
+           			<option @if(normalizationForm.get.control_borders == 2){selected=selected})">2</option>
+           			<option @if(normalizationForm.get.control_borders == 3){selected=selected})">3</option>
+           			<option @if(normalizationForm.get.control_borders == 4){selected=selected})">4</option>
+           		</select>
+           	}
+            @helper.input(
+           		normalizationForm("replicates"),
+           		'_label -> "Replicates",
+           		'_showConstraints -> false,
+                'class->"input-large"
+           	){ (id, name, value, args) =>
+           	
+           		<select id="@id" name="@name">
+           			<option @if(normalizationForm.get.replicates == 1){selected=selected})">1</option>
+           			<option @if(normalizationForm.get.replicates == 4){selected=selected})">4</option>
+           		</select>
+           	}
+          
+			
+           	@helper.input(
+           		normalizationForm("linkage_cutoff"),
+           		'_label -> "Linkage cutoff",
+           		'_showConstraints -> false
+           	){ (id, name, value, args) =>
+           		<div class="input-append">
+      				<input class="span2" id="@id" name="@name" @toHtmlArgs(args) size="16" type="text" style="width:165px" 
+      				value="@normalizationForm.get.linkage_cutoff"><span class="add-on">KB</span>
+      			</div>
+			}
+			
+			@helper.input(
+           		normalizationForm("do_scoring"),
+           		'_label -> "Score results",
+           		'_showConstraints -> false,
+           		'_help -> "Note—control screens and/or single mutant fitness data must be supplied"
+           	){ (id, name, value, args) =>
+           		<label class="checkbox">
+					<input @if(normalizationForm.get.do_scoring == true){checked=true}) id="@id" name="@name"  @toHtmlArgs(args) type="checkbox" value="true" style="margin-left:-15px">
+					 <span>&nbsp;Scores the normalized output</span>
+				</label>
+			}
+			
+			@helper.input(
+           		normalizationForm("show_plate_heatmaps"),
+           		'_label -> "Show plate heatmaps",
+           		'_showConstraints -> false
+           	){ (id, name, value, args) =>
+           		<label class="checkbox">
+					<input @if(normalizationForm.get.show_plate_heatmaps == true){checked=true}) id="@id" name="@name"  @toHtmlArgs(args) type="checkbox" value="true" style="margin-left:-15px">
+					 <span>&nbsp;Displays heatmaps of plates before/after normalization</span>
+				</label>
+			}
+			
+        </fieldset>
+        
+        <!--Submit/clear all box-->
+        <div class="form-actions">
+		  <button id="nsubmit" type="submit" class="btn btn-primary">Normalize</button>
+		  <a href=""><button type="button" class="btn">Clear all</button></a>
+		</div>
+		
+		<!--Javascript helper functions-->
+		<script type="text/javascript">
+			updateSubmitButton()
+			<!--Updates submit button if user wants to score as well-->
+			function updateSubmitButton(){
+				if (document.getElementById('do_scoring').checked == true) {
+				   document.getElementById('nsubmit').innerHTML = 'Normalize and score'
+				} else {
+				    document.getElementById('nsubmit').innerHTML = 'Normalize'
+				} 
+			}
+			
+		</script>
+	} 
+}

@@ -1,0 +1,70 @@
+@(scoringForm: Form[SGAToolsJob])
+@import helper._
+@import helper.twitterBootstrap._
+@implicitFieldConstructor = @{ FieldConstructor(help.twitterBootstrapInput.f) }
+
+@title = {
+    Scoring normalized colony sizes
+}
+
+@topbar = {}
+
+@main(title, topbar, nav="score") {
+    
+	@helper.form(action = routes.NormalizationController.submit, 'enctype -> "multipart/form-data", 'id -> "scoringForm", 'class->"form-horizontal") {
+		<fieldset>
+			
+            @helper.input(scoringForm("mainfile"), '_label -> "SGA formatted file(s)", '_id -> "mainfile", 'uploadwidget->"") { (id, name, value, args) =>
+    			<div class="fileupload fileupload-new" data-provides="fileupload" style="margin: 0 0 0 0; padding: 0 0 0 0;">
+					<div class="fileupload-preview uneditable-input" style="width:200px;"></div>
+					<span class="btn btn-file"><span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span><input type="file" name="mainfile"/></span>
+					<a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+				</div>
+			} 
+			<h5>Options</h5>
+			
+			
+			@helper.input(
+           		scoringForm("scoring_function"),
+           		'_label -> "Scoring function",
+           		'_showConstraints -> false
+           	){ (id, name, value, args) =>
+           		<select id="@id" name="@name">
+				  <option>C&#7522;&#11388; - &radic;C&#7522;C&#11388;</option>
+				</select>
+           		
+			}
+			
+			@helper.input(
+           		scoringForm("average_scores"),
+           		'_label -> "Average scores",
+           		'_showConstraints -> false,
+           		'height -> "30px"
+           	){ (id, name, value, args) =>
+           		<label class="checkbox">
+					<input id="@id" name="@name" type="checkbox" value="" style="margin-left:-15px">
+					 <span>&nbsp;Returns the average of scores in the same replicate group</span>
+				</label>
+			}
+			@helper.input(
+           		scoringForm("show_plates"),
+           		'_label -> "Show plate heatmaps",
+           		'_showConstraints -> false
+           	){ (id, name, value, args) =>
+           		<label class="checkbox">
+					<input id="@id" name="@name" type="checkbox" value="" style="margin-left:-15px">
+					 <span>&nbsp;Displays heatmaps of scored plates</span>
+				</label>
+			}
+			
+			
+        </fieldset>
+        
+        <!--Submit/clear all box-->
+        <div class="form-actions">
+		  <button id="ssubmit" type="submit" class="btn btn-primary">Score</button>
+		  <a href="@routes.ScoringController.initScoringForm()"><button type="button" class="btn">Clear all</button></a>
+		</div>
+		
+	} 
+}

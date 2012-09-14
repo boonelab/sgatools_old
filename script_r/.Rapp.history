@@ -1,0 +1,1020 @@
+traceback()
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+x = readSGAFile(inp)
+head(x[[1]])
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+x = readSGAFile(inp)
+?reaplce
+?replace
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+x = readSGAFile(inp)
+read.data.raw = read.csv(inp, sep='\t', header=F, comment.char='', stringsAsFactors=FALSE)#
+	comment_ind = grep( '^#.*', read.data.raw[[1]])#
+	read.data = read.data.raw[-comment_ind,]#
+	#Indicies of all header lines            #
+	header_lines_ind = grep('@[A-Za-z]{2}', read.data[[1]])#
+	header_lines = read.data[[1]][header_lines_ind]#
+#
+	#Find first header line#
+	HD_start_ind = grep('@[Hh][Dd]', read.data[[1]])#
+	#Find plate header#
+	PL_start_ind = grep('@[Pp][Ll]', read.data[[1]])#
+#
+	PL_end_ind = PL_start_ind#
+	#If @PL is the last header line, the end is the end of the data (length of rows)#
+	i = grep('@[Pp][Ll]', header_lines);#
+	if(i == length(header_lines)){#
+		PL_end_ind = dim(read.data)[1]#
+	}else{#
+		PL_end_ind = header_lines_ind[i+1]-1#
+	}#
+	#Our plate data#
+	PL_data = read.data[(PL_start_ind + 1): (PL_end_ind),]
+head(PL_data)
+PL_data = lapply(PL_data, function(x){replace(x, x == '-', NA)})
+head(PL_data)
+read.data.raw = read.csv(inp, sep='\t', header=F, comment.char='', stringsAsFactors=FALSE)#
+	comment_ind = grep( '^#.*', read.data.raw[[1]])#
+	read.data = read.data.raw[-comment_ind,]#
+	#Indicies of all header lines            #
+	header_lines_ind = grep('@[A-Za-z]{2}', read.data[[1]])#
+	header_lines = read.data[[1]][header_lines_ind]#
+#
+	#Find first header line#
+	HD_start_ind = grep('@[Hh][Dd]', read.data[[1]])#
+	#Find plate header#
+	PL_start_ind = grep('@[Pp][Ll]', read.data[[1]])#
+#
+	PL_end_ind = PL_start_ind#
+	#If @PL is the last header line, the end is the end of the data (length of rows)#
+	i = grep('@[Pp][Ll]', header_lines);#
+	if(i == length(header_lines)){#
+		PL_end_ind = dim(read.data)[1]#
+	}else{#
+		PL_end_ind = header_lines_ind[i+1]-1#
+	}#
+	#Our plate data#
+	PL_data = read.data[(PL_start_ind + 1): (PL_end_ind),]
+PL_data[PL_data == '-'] = NA
+head(PL_data)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+x = readSGAFile(inp)
+head(x[[1]])
+y = runNormalization(x)
+head(y[[1]])
+head(y,n=100)
+head(y[[1]],n=100)
+y[[1]][y[[1]]==NA] = '-'
+head(y[[1]])
+y = y[[1]]
+head(y)
+y[y==NA]='-'
+head(y)
+y[y=='NA']='-'
+head(y)
+y==NA
+y[is.na(y)]='-'
+head(y)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+x = readSGAFile(inp)
+y = runNormalization(x)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+y = runNormalization(x)
+y=y[[1]]
+head(y)
+head(y,n=200)
+head(x[[3]])
+original.read.data = x[[3]]
+data = y
+head(data)
+row.num.pl = as.numeric(rownames(data));#
+	row.num.all = as.numeric(rownames(original.read.data));#
+	row.num.notpl = setdiff(row.num.all, row.num.pl)
+row.num.pl
+row.num.notpl
+head(row.num.all)
+original.read.data = original.read.data[row.num.notpl];
+original.read.data = original.read.data[row.num.notpl,];
+head(original.read.data)
+names(data)= NA#
+	names(original.read.data) = NA
+data = rbind(data, original.read.data)
+data = data[order(rownames(data))]
+data = data[order(rownames(data)),]
+head(data)
+data = data[order(as.numeric(rownames(data)))]
+data = data[order(as.numeric(rownames(data))),]
+head(data)
+Rscript /Users/omarwagih/Desktop/boone-summer-project-2012/script_r/Main.R -i /var/folders/vC/vCsBPQfrEG8vhHj+ao7+y++++TQ/-Tmp-/multipartBody7064359578676077937asTemporaryFile, -s plate_sample_new_format.txt, -o /Users/omarwagih/Desktop/boone-summer-project-2012/web/test2/public/other -d savefile -b 2 -r 4 -j 3633a3c8-8db1-4dcf-9753-d4ba837d4e03 -t normalize
+as.character(data[1,])
+a = as.character(data[1,])
+trim(a)
+??trim
+str_trim(x)
+?read.delim
+inp
+a = read.delim(inp, header=F, sep='\t')
+head(a)
+write.table(a, '/Users/omarwagih/Desktop/t.txt')
+write.table(a, '/Users/omarwagih/Desktop/t.txt', quotes=F, sep='\t')
+write.table(a, '/Users/omarwagih/Desktop/t.txt', quote=F,row.names=F, col.names=F, sep='\t')
+'kljdsflksdsdf'
+'kljdsflksdsdf'
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+r = readSGAFile('/Users/omarwagih/Desktop/platedata/scored_plate_sample_new_format.txt')
+head(r[[1]])
+head(r[[1]],n=100)
+runScoring(r)
+traceback()
+head(r[[1]]$query)
+control.regex = '^ctrl$';
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+r[[1][['query']]]
+r[[1]][['query']]]
+r[[1]][['query']]
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+which(r[[1]] == 'NA')
+which(r[[1]] == '-')
+which(r[[1]] == '-')
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+runScoring(r)
+s=runScoring(r)
+head(s)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+s=runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+s=runScoring(r)
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+s=runScoring(r)
+head(s)
+head(s,n=100)
+dput(s)
+dput(head(s))
+dput(head(r[[3]]))
+str(r[[3]])
+df = data.frame(x=1:10, y=11:20 )
+df
+grep("3". df)
+grep("3", df)
+grep("\d", df)
+grep("\\d", df)
+grep("\\d*", df)
+which(df==3)
+which(df==13)
+df$3 = NA
+df$'3' = NA
+df
+which(is.na(df))
+df$3 = '-'
+df$'3' = '-'
+df
+df[13] = '-'
+df[13,] = '-'
+df
+df = data.frame(x=1:10, y=11:20 )
+df$'3' = '-'
+df
+df[13]
+df[,13]
+df[[13]]
+df[[[13]]]
+df
+as.vector(df)
+which(df==13)
+which(df=='3')
+which(df=='-')
+?replace
+sgadata = readSGAFile('/Users/omarwagih/Desktop/platedata/plate_sample_new_format.txt')
+head(sgadata[[1]])
+setwd('/Users/omarwagih/Desktop/boone-summer-project-2012/script_r')#
+#
+source('io/PrintHelp.R')#
+#
+options("repos"="http://cran.us.r-project.org")#
+#printTitle('Installing/loading required packages')#
+#Check if necessary packages are installed, if not install them and load#
+packages = c('bootstrap', 'ggplot2', 'reshape', 'optparse', 'scales', 'doBy')#
+for(i in 1:length(packages)){#
+	pkg = packages[i];#
+	if(!pkg %in% rownames(installed.packages())){#
+		invisible(install.packages(pkg))#
+	}#
+	#Load package#
+	suppressPackageStartupMessages((require(pkg, character.only=TRUE)))#
+}#
+#
+#Load all dependant scripts#
+#printTitle('Loading dependant scripts')#
+dirs = c('normalize', 'score', 'io', 'simulate')#
+for(i in 1:length(dirs)){#
+	pathnames <- list.files(pattern="[.]R$", path=dirs[i], full.names=TRUE);#
+	for(j in 1:length(pathnames))#
+		#writeLines(paste('Loading required script:', pathnames[j]))#
+	invisible(sapply(pathnames, FUN=source));#
+}
+norm = runNormalization(sgadata)
+head(norm[[2]])
+n = norm[[2]]
+plotSGA_facet(n, c('colonysize_platenorm', 'colonysize_spatialnorm','colonysize_rowcol'))
+plotSGA_facet(n, c('colonysize_platenorm', 'colonysize_spatialnorm','colonysize_rowcol'), plateid_map=norm[[4]])
+plotSGA_facet(n, names(n)[12:16], plateid_map=norm[[4]])
+num_cols
+pdf('/Users/omarwagih/Desktop/test.pdf')
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16])
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16])
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16])
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16])
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16])
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16])
+dev.off()
+plotSGA_facet_n(n, names(n)[12:16])
+plotSGA_facet_n(n, names(n)[12:16])
+last_plot()
+dev.off()
+pdf('/Users/omarwagih/Desktop/test.pdf')
+plotSGA_facet_n(n, names(n)[12:16])
+dev.off()
+dev.off()
+plotSGA_facet_n(n, names(n)[12:16])
+last_plot()
+pdf('/Users/omarwagih/Desktop/test.pdf')
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16])
+dev.off()
+?ggsave
+last_plot()
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16])
+last_plot()
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16], path='/Users/omarwagih/Desktop/test.pdf')
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16], path='/Users/omarwagih/Desktop/test.pdf')
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16], path='/Users/omarwagih/Desktop/test.pdf')
+ggplot(c(1,2,3))
+ggplot(data.frame(x=1:10))
+ggplot(data.frame(x=1:10))+geom_point()
+ggplot(data.frame(x=1:10))+geom_point()
+p <- ggplot(mpg, aes(displ, hwy))
+pdf('/Users/omarwagih/Desktop/test.pdf')
+p
+p
+p + geom_plot()
+p + geom_point()
+dev.off()
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16], path='/Users/omarwagih/Desktop/test.pdf')
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16], path='/Users/omarwagih/Desktop/test.pdf')
+source('Untitled.R')
+plots=plotSGA_facet_n(n, names(n)[12:16])
+head(plots)
+pdf('test.pdf')
+for(p in 1:length(plots)) plots[[p]]
+dev.off)
+dev.off()
+plots[[1]]
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16])
+dev.off()
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16])
+source('Untitled.R')
+plotSGA_facet_n(n, names(n)[12:16])
+last_plot()

@@ -1,0 +1,79 @@
+@(title: Html,topbar: Html, nav: String = "")(content: Html)
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@title</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
+        
+        <!--Bootstrap imports-->
+        <script src="@routes.Assets.at("bootstrap/original/js/bootstrap.js")" type="text/javascript"></script>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("bootstrap/original/css/bootstrap.css")">
+        <!--Docs used for example boxes-->
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("bootstrap/original/css/docs.css")">
+        
+        
+        <!--Bootstrap extensions by Jansy-->
+        <script src="@routes.Assets.at("bootstrap/jasny-extensions/js/bootstrap-fileupload.js")" type="text/javascript"></script>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("bootstrap/jasny-extensions/css/jasny-bootstrap.css")">
+    </head>
+    <body>
+    
+    	<!-- Navigation bar -->
+    	<div class="navbar navbar-fixed-top">
+      		<div class="navbar-inner">
+        		<div class="container">
+          			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            			<span class="icon-bar"></span>
+            			<span class="icon-bar"></span>
+            			<span class="icon-bar"></span>
+          			</a>
+          			<a class="brand" href="@routes.Application.index()">SGATools</a>
+	          		<div class="nav-collapse collapse">
+	            		<ul class="nav">
+	              			<li class="@("active".when(nav == "image-analysis"))">
+	             				<a href="#">Image analysis</a>
+	             			</li>
+	             			<li class="@("active".when(nav == "normalize"))">
+	             				<a href="@routes.NormalizationController.initNormalizationForm()">Normalize</a>
+	             			</li>
+	             			<li class="@("active".when(nav == "score"))">
+	             				<a href="@routes.ScoringController.initScoringForm()">Score</a>
+	             			</li>
+	            		</ul>
+	            	<ul class="nav pull-right">
+		          		<li class="@("active".when(nav == "download"))">
+		             		<a href="JavaScript:newPopup('https://github.com/omarwagih/boone-summer-project-2012/tree/master/script_r');">Download</a>
+		             	</li>
+		            	<li class="@("active".when(nav == "issue"))">
+		            		<a href="JavaScript:newPopup('https://github.com/omarwagih/boone-summer-project-2012/issues')">Issue tracker</a>
+		            	</li>
+		            	<li class="divider-vertical"></li>
+		          		<li class="@("active".when(nav == "help"))">
+		             		<a href="#">Help</a>
+		           		</li>
+		            
+		          	</ul>
+	          		</div><!--/.nav-collapse -->
+        		</div>
+      		</div>
+    	</div>
+    	
+    	@topbar
+    	<!-- Container content -->
+    	<div class="container">
+    	
+    		<div class="page-header" style="padding-top:30px">
+    			<h3>@title</h3>
+            </div>
+            
+        	@content
+        	
+        	<!--Footer stuff-->
+        	<hr>
+    		<footer><p>© Boone Lab 2012</p></footer>
+    	</div>
+    </body>
+</html>

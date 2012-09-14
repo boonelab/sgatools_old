@@ -1,0 +1,100 @@
+@(title: Html, nav: String = "")(content: Html)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Normalization Prototype</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap_white.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-extra.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/jasny-bootstrap.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap-modal.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap-popover.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap-tooltip.js")" type="text/javascript"></script>
+        <script type="text/javascript"> window.history.forward(); function noBack() { window.history.forward(); } </script>
+        <script src="@routes.Assets.at("javascripts/bootstrap-fileupload.js")" type="text/javascript"></script>
+    </head>
+    
+	<script type="text/javascript">
+	// Popup window code
+	function newPopup(url) {
+		popupWindow = window.open(
+			url,'popUpWindow','height=700,width=800,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes')
+	}
+	
+	</script>
+    
+    <body onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">
+        <div class="navbar navbar-fixed-top">
+	    <div class="navbar-inner">
+	      <div class="container">
+	      
+	        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+	          <span class="icon-bar"></span>
+	          <span class="icon-bar"></span>
+	          <span class="icon-bar"></span>
+	        </a>
+	        
+	        <a class="brand" href="@routes.Application.index()">SGAtools 1.0</a>
+	        <div class="nav-collapse">
+	          <ul class="nav">
+	          	 <li class="@("active".when(nav == "ia"))">
+	             	<a href="#">Image analysis</a>
+	             </li>
+	             <li class="@("active".when(nav == "norm"))">
+	             	<a href="@routes.NormController.blankNormForm()">Normalize</a>
+	             </li>
+	             <li class="@("active".when(nav == "score"))">
+	             	<a href="@routes.ScoreController.blankScoreForm()">Score</a>
+	             </li>
+	            
+	          </ul>
+	          
+	          <ul class="nav pull-right">
+	          	 <li class="@("active".when(nav == "download"))">
+	             	<a href="JavaScript:newPopup('https://github.com/omarwagih/boone-summer-project-2012/tree/master/script_r');">Download</a>
+	             </li>
+	            <li class="@("active".when(nav == "issue"))">
+	            	<a href="JavaScript:newPopup('https://github.com/omarwagih/boone-summer-project-2012/issues')">Issue tracker</a>
+	            </li>
+	            
+	          	<li class="divider-vertical"></li>
+	          	
+	          	<li class="@("active".when(nav == "help"))">
+	             	<a href="#">Help</a>
+	            </li>
+	            
+	          </ul>
+	        </div><!-- /.nav-collapse -->
+	      </div>
+	    </div><!-- /navbar-inner -->
+	  </div>
+        
+        <div class="container" style="margin-top:60px;">
+
+            <div class="content">
+            
+            	<div class="page-header">
+                    <h2>@title</h2>
+                </div>
+
+                <div class="row">
+                    <div class="span12">
+                        @content
+                    </div>
+                </div>
+            </div>
+			<br>
+            <footer class="footer">
+		        <p class="pull-right"><a href="#">Back to top</a></p>
+		        <p>&copy; Boone Lab 2012</p>
+	        </footer>
+
+        </div>
+        
+    </body>
+</html>

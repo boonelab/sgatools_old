@@ -1,0 +1,104 @@
+@(iaForm: Form[SGAToolsJob])
+@import helper._
+@import helper.twitterBootstrap._
+@implicitFieldConstructor = @{ FieldConstructor(help.twitterBootstrapInput.f) }
+
+
+@main(title="Image analysis", nav="image-analysis") {
+    
+	​<button class="btn btn-primary" onclick="alert('TOP LEFT='+topLeft.x+','+ topLeft.y+ 'and BOTTOM RIGHT='+bottomRight.x+','+ bottomRight.y);">Show coordinates</button><br>
+	<input type="file" id="imageLoader" name="imageLoader"/><br>
+	<div style="overflow: auto;max-width: 100%; max-height: 600px;"><canvas id="imageCanvas"></canvas></div>
+	
+<script type='text/javascript'>
+	var imageLoader = document.getElementById('imageLoader');
+	imageLoader.addEventListener('change', handleImage, false);
+	var canvas = document.getElementById('imageCanvas');
+	var ctx = canvas.getContext('2d');
+	
+	var topLeft = null;
+	var bottomRight = null;
+	
+	
+	function handleImage(e) {
+	   	topLeft = null;
+	   	bottomRight = null;
+	    
+	    var reader = new FileReader();
+	    reader.onload = function(event) {
+	        canvas.removeEventListener("click");
+	        canvas.removeEventListener("mousemove");
+	        
+	        var img = new Image();
+	        img.onload = function() {
+	            
+	            canvas.width = img.width;
+	            canvas.height = img.height;
+	            ctx.drawImage(img, 0, 0);
+	        }
+	        img.src = event.target.result;
+			
+	        canvas.addEventListener('click', function(event){
+	        	var mousePos = getMousePos(canvas, event);
+	        	if(topLeft == null){
+	        		topLeft = mousePos;
+	        	}else if(bottomRight == null){
+	        		bottomRight = mousePos;
+	        	}else{
+	        		topLeft = null;
+	        		bottomRight = null;
+	        	}
+	        }
+	        , false);
+	        canvas.addEventListener('mousemove', function(event) {
+	            var mousePos = getMousePos(canvas, event);
+	            var message = "Mouse position: " + mousePos.x + "," + mousePos.y;
+	            writeMessage(canvas, message, img);
+	        }, false);
+	        
+	    }
+	    reader.readAsDataURL(e.target.files[0]);
+	}
+	
+	
+	function writeMessage(canvas, message, img) {
+	    var context = canvas.getContext('2d');
+	    context.clearRect(0, 0, canvas.width, canvas.height);
+	    context.drawImage(img, 0, 0);
+	    context.font = '15pt Calibri';
+	    context.fillStyle = 'red';
+	    context.fillText(message, 10, 25);
+	    
+	    if(topLeft != null){
+	    	ctx.fillStyle = "#f00";
+	        ctx.fillRect(topLeft.x-3, topLeft.y-3, 6, 6);
+	    }
+	    if(bottomRight != null){
+	    	ctx.fillStyle = "#00009C";
+	        ctx.fillRect(bottomRight.x-3, bottomRight.y-3, 6, 6);
+	    }
+	}
+	
+	function getMousePos(canvas, evt) {
+	    var rect = canvas.getBoundingClientRect(),
+	        root = document.documentElement;
+	
+	    
+	    var mouseX, mouseY;
+
+	    if(evt.offsetX) {
+	        mouseX = evt.offsetX;
+	        mouseY = evt.offsetY;
+	    }
+	    else if(evt.layerX) {
+	        mouseX = evt.layerX;
+	        mouseY = evt.layerY;
+	    }
+	    return {
+	        x: mouseX,
+	        y: mouseY
+	    };
+	}
+	
+</script>
+}

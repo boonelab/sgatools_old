@@ -1,0 +1,31 @@
+@(elements: helper.FieldElements)
+<div class="control-group @if(elements.hasErrors) {error}">
+	<label class="control-label" style="padding-right:10px; width:160px" for="@elements.id">@elements.label</label>
+	<div class="controls">
+		
+		@if(elements.args.contains('append)){<div class="input-append">}
+		@elements.input
+		@if(elements.args.contains('append)){<span class="add-on" style="position: relative; left: -4px; padding-right:2px">@elements.args.get('append)</span>}
+		@if(elements.args.contains('append)){</div>}
+		
+		@if(elements.args.contains('popover)){
+			<i class="icon-question-sign" href="#" id="@elements.args.get('_id)-popover" rel="popover" data-content="@elements.args.get('popover)" data-original-title="@elements.args.get('popoverTitle)"></i>
+			
+			<script>  
+			$(function (){    $("#@elements.args.get('_id)-popover").popover({   @if(elements.args.contains('popoverPlacement)){placement : '@elements.args.get('popoverPlacement)'}   });     });  
+			</script> 
+		}
+	
+		
+		<p class="help-inline">@elements.infos.mkString(", ")
+			@if(elements.hasErrors) {
+				</p><p class="help-block" style="margin-left:10px">@elements.errors.mkString(", ")
+			}
+  		</p>
+  		
+  			
+		@if(elements.args.contains('uploadwidget)){
+			<script type="text/javascript">$('.fileupload').fileupload(name="@elements.id")</script>
+		}
+  	</div>
+</div>

@@ -1,0 +1,25 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index()
+GET     /help                       controllers.Application.renderHelpPage()
+
+
+# Normalization page
+GET     /normalize                           controllers.SGAToolsController.initNormalizationForm()
+POST     /normalize                           controllers.SGAToolsController.submitNormalizationForm()
+
+# Scoring page
+GET     /score                           controllers.SGAToolsController.initScoringForm()
+POST     /score                           controllers.SGAToolsController.submitScoringForm()
+
+#Normalization/Scoring job summary
+
+#Normalization/Scoring job summary
+GET     /imageanalysis                           controllers.SGAToolsController.initIAForm()
+
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -1,0 +1,33 @@
+
+@main("Home") {
+    <div class="hero-unit">
+    	<div class="row">
+    		<div>
+	        <center><h1>SGATools<small>(alpha v 1.0)</small></h1>
+	        <p>Tools for image processing, normalizing and scoring Sythetic Genetic Array screens. </p>
+	        <p><a class="btn btn-primary btn-large">Get started »</a> </p>
+	        </center>
+	        </div>
+	    </div>
+     </div>
+	<hr>
+	<div class="row">
+        <div class="span4">
+          <h3><i class="icon-camera"></i> Image analysis</h3>
+          <p>Utilizes the image analysis software, <a href="http://research.ncl.ac.uk/colonyzer/">Colonizer</a> to determine and provide accurate pixel colony sizes. See details of the software <a href="http://www.ncbi.nlm.nih.gov/pubmed/20509870">here</a></p>
+          <br>
+          <p><a class="btn" href="">Start image analysis »</a></p>
+        </div>
+        <div class="span4">
+          <h3><i class="icon-bar-chart"></i> Normalization</h3>
+          <p>Comprehensive filtering and reduction of several plate/experimental artifacts to drastically enhance the quality of your data. Read more <a href="http://www.ncbi.nlm.nih.gov/pubmed/21076421">here</p>
+          <p><a class="btn" href="@routes.SGAToolsController.initNormalizationForm()">Start normalization »</a></p>
+       </div>
+        <div class="span4">
+          <h3><i class="icon-table"></i> Scoring</h3>
+          <p>Use control screens or single mutant fitness data to score normalized colony sizes allowing you to identify biologically meaningful genetic interactions</p>
+          <p><a class="btn" href="@routes.SGAToolsController.initScoringForm()">Start scoring »</a></p>
+        </div>
+    </div>
+
+}

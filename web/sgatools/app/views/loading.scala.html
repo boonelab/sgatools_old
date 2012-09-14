@@ -1,0 +1,30 @@
+@(message: String)
+
+<div class="loader-container" style="padding-bottom:300px;">
+	<ul id="transit" >
+		<!-- sphere effect -->
+	    <li><div id="layer1" class="sphere"></div> </li>
+	    <li><div id="layer2" class="sphere"></div></li>
+	    <li><div id="layer3" class="sphere"></div></li>
+	    <li><div id="layer4" class="sphere"></div></li>
+	    <li><div id="layer5" class="sphere"></div></li>
+		
+	</ul>​
+	<ul style="margin-top:-35px"/>
+	<center><h6 style="">@message <span id="dots">.</span> </h6></center>
+</div>
+
+<script type="text/javascript">
+      window.onload=function(){
+         var dotspan = document.getElementById('dots');
+         window.setInterval(function(){
+            if(dotspan.textContent == '.....'){
+               dotspan.textContent = '.';
+            }
+            else{
+               dotspan.textContent += '.';
+            }
+         }, 1000);
+      }
+   </script>
+   

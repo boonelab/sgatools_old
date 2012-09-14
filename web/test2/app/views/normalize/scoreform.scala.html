@@ -1,0 +1,63 @@
+@(scoreForm: Form[ScoreJob])
+@import helper._
+@import helper.twitterBootstrap._
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f) }
+
+@title = {
+    Scoring normalized colonies 
+}
+
+@main(title, nav = "score") {
+    
+    @helper.form(action = routes.ScoreController.submit, 'enctype -> "multipart/form-data", 'id -> "scoreForm", 'class->"form-horizontal") {
+        <script type="text/javascript">
+        	function toggle(checkboxID, toggleID) {
+				var checkbox = document.getElementById(checkboxID);
+				var toggle = document.getElementById(toggleID);
+				updateToggle = checkbox.checked ? toggle.disabled=false : toggle.disabled=true;
+			}
+		
+		</script>
+		
+        <!--FORM FILE INPUT-->
+        <fieldset>
+            <legend>Run scoring</legend>
+            <!--
+            @inputFile(
+            	scoreForm("upload01"), 
+            	'_label -> "Normalized data file(s)",
+            	'_id -> "upload01",
+            	'class -> "fileBtn",
+            	'multiple -> "multiple",
+            	'popover -> "TODO",
+            	'popoverTitle -> "<center>Plate file(s) help</center>",
+            	'popoverPlacement -> "bottom"
+            )
+            -->
+            @helper.input(scoreForm("upload01"), '_label -> "SGA formatted file(s)", '_id -> "upload01", 'uploadwidget->"") { (id, name, value, args) =>
+    			<div class="fileupload fileupload-new" data-provides="fileupload">
+					<div class="fileupload-preview uneditable-input" style="width:150px"></div>
+					<span class="btn btn-file"><span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span><input type="file" name="upload01"/></span>
+					<a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+				</div>
+			} 
+			
+        </fieldset>
+        <fieldset>
+        	<legend>Options</legend>
+        </fieldset>
+        
+        <!--FORM SUBMIT/CLEAR-->
+        <div class="form-actions">
+        	<div style="margin-left:10px;">
+            <input id="submitjob" type="submit" class="btn btn-primary" value="Submit job" onClick="document.getElementById('progressbar').style.display = 'inline'; this.disabled=1; document.getElementById('clearall').disabled=1; this.form.submit();">
+            <a href="@routes.ScoreController.blankScoreForm"><input type="button" id="clearall" class="btn" value="Clear all"/></a>
+            </div>
+        </div>
+        <div style="display:none;" id="progressbar" class="progress progress-striped active"><div class="bar" style="width: 100%;"><b>Please wait...</b></div></div>
+        
+        <script src="@routes.Assets.at("javascripts/bootstrap-popover.js")" type="text/javascript"></script>
+        
+    }
+    
+}

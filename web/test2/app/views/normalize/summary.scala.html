@@ -1,0 +1,55 @@
+@(nj: NormJob)
+@import helper.twitterBootstrap._
+
+@main(Html("Normalization complete!"), nav = "normsubmitted") {
+ 
+<!--
+<h2>Number of control borders = @nj.numBorders</h2>
+<h2>Number of replicates = @nj.numReplicates</h2>
+<h2>Linkage cutoff = @nj.linkageCut</h2>
+
+<legend>Job summary</legend>
+<h4>Elapsed time: @nj.summary_timeElapsed</h4>
+<h4>Plate files: @nj.summary_plateFiles</h4>
+<h4>Control borders: @nj.numBorders</h4>
+<h4>Replicates: @nj.numReplicates</h4>
+<h4>Linkage correction: @nj.summary_linkageCorrection</h4>
+-->
+
+<legend>Job summary</legend>
+<div style="padding-bottom:20px">
+<table class="condensed-table">
+<tr>
+<td style="border-top:0px"><b>Elapsed time:</b></td>
+<td style="border-top:0px">@nj.summary_timeElapsed</td>
+</tr>
+<tr>
+<td><b>Plate files:</b></td>
+<td>@nj.summary_plateFiles</td>
+</tr>
+<tr>
+<td><b>Array ignore file:</b></td>
+<td>@nj.summary_arrayIgnoreFile</td>
+</tr>
+<tr>
+<td><b>Control borders:</b></td>
+<td>@nj.numBorders</td>
+</tr>
+<tr>
+<td><b>Replicates:</b></td>
+<td>@nj.numReplicates</td>
+</tr>
+<tr>
+<td><b>Linkage correction:</b></td>
+<td> @nj.summary_linkageCorrection</td>
+</tr>
+</table>
+</div>
+<legend>Actions</legend>
+
+<a class="btn btn-success" href="@routes.Assets.at(nj.outputPath)"><i class="icon-download-alt icon-white"></i> Download results</a>
+
+<a class="btn" href="@routes.NormController.blankNormForm"><i class="icon-repeat"></i> Start over</a>
+<a class="btn" href="#"><i class="icon-th-large"></i> Score normalized data</a>
+}
+
