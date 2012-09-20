@@ -66,6 +66,8 @@ public class SGAToolsController extends Controller {
 		//Get form
 		Form<SGAToolsJob> filledForm = normalizationForm.bindFromRequest();
 		
+		//JOptionPane.showMessageDialog(null, filledForm.data());
+		
 		//Process submission
 		long submission_start_time = new Date().getTime(); //start time
 		
@@ -85,12 +87,18 @@ public class SGAToolsController extends Controller {
 		
 		//Get file(s) uploaded
 		List<FilePart> plate_files = request().body().asMultipartFormData().getFiles();
+		FilePart array_definition_file = request().body().asMultipartFormData().getFile("array_definition_file");
+		
 		//Store plate files in a map, mapping their name to File object
 		Map<String, FilePart> plate_files_map = new HashMap<String, FilePart>();
         for(FilePart fp : plate_files){
 			plate_files_map.put(fp.getFilename(), fp);
         }
-        //To store plate file paths and the actual names of the plate files
+        
+        //Remove extra non plate files
+        if(array_definition_file != null) plate_files_map.remove(array_definition_file.getFilename());
+        
+        //To store plate file paths and the actual names of the plate files as comma seprated strings
         StringBuilder plate_file_paths = new StringBuilder();
         StringBuilder save_names = new StringBuilder();
         
@@ -162,7 +170,6 @@ public class SGAToolsController extends Controller {
     		save_names.append(fp.getFilename()+",");
         }
         
-        //JOptionPane.showMessageDialog(null, "colonyFormattedData.size()="+colonyFormattedData.size()+", plate map size="+plate_files_map.size());
         //Process colony formatted files if available
         if(colonyFormattedData.size() == plate_files_map.size()){
         	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

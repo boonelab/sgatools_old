@@ -177,6 +177,16 @@ a:hover {
   text-decoration: underline;
 }
 
+#small-link {
+  color: #555555;
+  text-decoration: none;
+}
+#small-link:hover {
+  color: #005580;
+  text-decoration: none;
+}
+
+
 .img-rounded {
   -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
@@ -754,7 +764,8 @@ hr {
 
 abbr[title] {
   cursor: help;
-  border-bottom: 1px dotted #999999;
+  border-bottom: 1px dotted #cdc9c9;
+  /*omarwagih changed from 999999*/
 }
 
 abbr.initialism {
@@ -4783,7 +4794,7 @@ input[type="submit"].btn.btn-mini {
   top: 50%;
   left: 50%;
   z-index: 1050;
-  width: 560px;
+  width: 660px;
   margin: -250px 0 0 -280px;
   overflow: auto;
   background-color: #ffffff;
@@ -5642,6 +5653,10 @@ a.badge:hover {
 
 .pull-left {
   float: left;
+}
+
+.pull-none {
+  float: none;
 }
 
 .hide {

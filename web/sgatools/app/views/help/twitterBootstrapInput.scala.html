@@ -2,14 +2,23 @@
 <div class="control-group @if(elements.hasErrors) {error}" @if(elements.args.contains('height)){style="height:@elements.args.get('height)"} 
 																@if(elements.args.contains('cg_id)){id=@elements.args.get('cg_id)} 
 																@if(elements.args.contains('cg_style)){style=@elements.args.get('cg_style)}>
-	<label class="control-label" for="@elements.id">@elements.label</label>
+	
+	
+		
+	
+	<label @if(elements.args.contains('helpModal)){onClick="labelHelpClicked('@elements.args.get('helpModal)')" data-toggle="modal" data-target="#helpModal"}
+		class="control-label" for="@elements.id">
+		@if(elements.args.contains('helpModal)){<abbr title="">}
+		@elements.label
+		@if(elements.args.contains('helpModal)){</abbr>}
+	</label>
 	<div class="controls">
 		
 		@if(elements.args.contains('append)){<div class="input-append">}
 		@elements.input
 		@if(elements.args.contains('append)){</div>}
 		
-		<p class="help-inline">@elements.infos.mkString(", ")
+		<p class="help-inline" @if(elements.args.contains('uploadwidget)){style="width:0px;"}>@elements.infos.mkString(", ")
 			@if(elements.hasErrors) {
 				</p><p class="help-block" style="margin-left:5px;">@elements.errors.mkString(", ")
 			}

@@ -3,3 +3,16 @@ div.loader-container{
   margin-left: 0%;
   width:550px;
 }
+
+
+#arrayDef {
+    width:250px;
+}
+
+.plateCombo {
+    width:120px;
+}
+
+#view-plate {
+    display:none;
+}

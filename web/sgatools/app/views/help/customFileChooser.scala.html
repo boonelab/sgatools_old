@@ -1,0 +1,10 @@
+@(id: String, name: String, allowMultiple: Boolean, appendHtml: Html)
+
+<div class="fileupload fileupload-new" data-provides="fileupload">
+	<div class="fileupload-preview uneditable-input" style="width:238px;"></div>
+		<span class="btn btn-file"><span class="fileupload-new">Select file</span>
+		<span class="fileupload-exists">Change</span><input id="@id" name="@name" @if(allowMultiple){multiple} type="file"/></span>
+		<a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+		
+		@appendHtml
+</div>

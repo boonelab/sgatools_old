@@ -1190,7 +1190,8 @@ body > .page-alert {
 }
 
 .fileupload {
-  margin-bottom: 9px;
+    /*omarwagih changed from 9*/
+  margin-bottom: -17px;
 }
 
 .fileupload .uneditable-input {
