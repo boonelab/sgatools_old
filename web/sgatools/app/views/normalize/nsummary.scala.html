@@ -9,15 +9,15 @@
         </thead>
 		<tr>
 			<td>Elapsed time</td>
-			<td>@job.time_elapsed</td>
+			<td>@job.timeElapsed</td>
 		</tr>
 		<tr>
 			<td>Plate files</td>
-			<td>@job.plate_files</td>
+			<td>@job.plateFileNamesCSV</td>
 		</tr>
 		<tr>
 			<td>Control borders</td>
-			<td>@job.control_borders</td>
+			<td>@job.controlBorders</td>
 		</tr>
 		<tr>
 			<td>Replicates</td>
@@ -25,17 +25,21 @@
 		</tr>
 		<tr>
 			<td>Linkage correction cutoff</td>
-			<td>@job.linkage_cutoff</td>
+			<td>@job.linkageCutoff</td>
 		</tr>
 		<tr>
 			<td>Results scored</td>
-			<td>@if(job.do_scoring == true){&#10004;}else{&#10008;}</td>
+			<td>@if(job.doScoring == true){&#10004;}else{&#10008;}</td>
 		</tr>
+		<!--
 		<tr>
 			<td>Plate heatmaps</td>
-			<td>@if(job.show_plate_heatmaps == true){&#10004; <a href="@routes.Assets.at(job.plotted_data_path)">Click here</a>}else{&#10008;}</td>
+			<td>if(job.show_plate_heatmaps == true){&#10004; <a href="@routes.Assets.at(job.plottedDataPath)">Click here</a>}else{&#10008;}</td>
+			 
 		</tr>
+		-->
+		
 	</table>
-	<a class="btn btn-success" href="@routes.Assets.at(job.output_path)"><i class="icon-download-alt"></i> Download results</a>
+	<a class="btn btn-success" href="@routes.Assets.at(job.outputPath)"><i class="icon-download-alt"></i> Download results</a>
 	<a class="btn" href="@routes.SGAToolsController.initNormalizationForm"><i class="icon-repeat"></i> Start over</a>
 }

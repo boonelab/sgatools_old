@@ -9,21 +9,23 @@
         </thead>
 		<tr>
 			<td>Elapsed time</td>
-			<td>@job.time_elapsed</td>
+			<td>@job.timeElapsed</td>
 		</tr>
 		<tr>
 			<td>Plate files</td>
-			<td>@job.plate_files</td>
+			<td>@job.plateFileNamesCSV</td>
 		</tr>
 		<tr>
 			<td>Scoring function</td>
 			<td>-</td>
 		</tr>
+		<!--
 		<tr>
 			<td>Plate heatmaps</td>
-			<td>@if(job.show_plate_heatmaps == true){&#10004; <a href="@routes.Assets.at(job.plotted_data_path)">Click here</a>}else{&#10008;}</td>
+			<td>if(job.show_plate_heatmaps == true){&#10004; <a href="@routes.Assets.at(job.plottedDataPath)">Click here</a>}else{&#10008;}</td>
 		</tr>
+		-->
 	</table>
-	<a class="btn btn-success" href="@routes.Assets.at(job.output_path)"><i class="icon-download-alt icon-white"></i> Download results</a>
+	<a class="btn btn-success" href="@routes.Assets.at(job.outputPath)"><i class="icon-download-alt icon-white"></i> Download results</a>
 	<a class="btn" href="@routes.SGAToolsController.initScoringForm"><i class="icon-repeat"></i> Start over</a>
 }

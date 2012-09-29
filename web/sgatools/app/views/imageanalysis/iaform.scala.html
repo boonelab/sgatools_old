@@ -2,80 +2,106 @@
 @import helper._
 @import helper.twitterBootstrap._
 @implicitFieldConstructor = @{ FieldConstructor(help.twitterBootstrapInput.f) }
-
+@import help._
 
 @main(title="Image analysis", nav="image-analysis") {
-    
-	​<button class="btn btn-primary" onclick="alert('TOP LEFT='+topLeft.x+','+ topLeft.y+ 'and BOTTOM RIGHT='+bottomRight.x+','+ bottomRight.y);">Show coordinates</button><br>
-	<input type="file" id="imageLoader" name="imageLoader"/><br>
-	<div style="overflow: auto;max-width: 100%; max-height: 600px;"><canvas id="imageCanvas"></canvas></div>
-	
-<script type='text/javascript'>
+	<center>@customFileChooser("imageLoader", "imageLoader", true, Html(""))</center>
+	​<br>
+	<div id="canvasDiv" style="overflow: auto;max-width: 100%; max-height: 600px;display:none">
+		<canvas id="imageCanvas"></canvas>
+	</div>
+	<br>
+	<center><button id='downloadCoordinates' class="btn btn-large disabled" onclick="alert('TOP LEFT='+topLeft.x+','+ topLeft.y+ 'and BOTTOM RIGHT='+bottomRight.x+','+ bottomRight.y);">Download coordinates</button>
+    </center>
+<script type = "text/javascript">
 	var imageLoader = document.getElementById('imageLoader');
 	imageLoader.addEventListener('change', handleImage, false);
 	var canvas = document.getElementById('imageCanvas');
 	var ctx = canvas.getContext('2d');
 	
-	var topLeft = null;
-	var bottomRight = null;
+	var firstColony = null;
+	var lastColony = null;
+	var img = null;
+	
+	canvas.addEventListener('click', function(event) {
+	    var mousePos = getMousePos(canvas, event);
+	    if (firstColony == null) {
+	        firstColony = mousePos;
+	    } else if (lastColony == null) {
+	        lastColony = mousePos;
+	    } else {
+	        firstColony = null;
+	        lastColony = null;
+	    }
+	}, false);
+	canvas.addEventListener('mousemove', function(event) {
+	    var mousePos = getMousePos(canvas, event);
+	    //var message = "Mouse position: " + mousePos.x + "," + mousePos.y;
+	    //writeMessage(canvas, message, img);
+	    writeMessage(canvas, mousePos, img);
+	}, false);
 	
 	
 	function handleImage(e) {
-	   	topLeft = null;
-	   	bottomRight = null;
-	    
+		
+	    firstColony = null;
+	    lastColony = null;
+	
 	    var reader = new FileReader();
 	    reader.onload = function(event) {
-	        canvas.removeEventListener("click");
-	        canvas.removeEventListener("mousemove");
-	        
-	        var img = new Image();
+	    
+	        img = new Image();
 	        img.onload = function() {
-	            
+	
 	            canvas.width = img.width;
 	            canvas.height = img.height;
 	            ctx.drawImage(img, 0, 0);
 	        }
 	        img.src = event.target.result;
+	
 			
-	        canvas.addEventListener('click', function(event){
-	        	var mousePos = getMousePos(canvas, event);
-	        	if(topLeft == null){
-	        		topLeft = mousePos;
-	        	}else if(bottomRight == null){
-	        		bottomRight = mousePos;
-	        	}else{
-	        		topLeft = null;
-	        		bottomRight = null;
-	        	}
-	        }
-	        , false);
-	        canvas.addEventListener('mousemove', function(event) {
-	            var mousePos = getMousePos(canvas, event);
-	            var message = "Mouse position: " + mousePos.x + "," + mousePos.y;
-	            writeMessage(canvas, message, img);
-	        }, false);
-	        
+			document.getElementById('canvasDiv').style.display = "";
 	    }
 	    reader.readAsDataURL(e.target.files[0]);
 	}
 	
 	
-	function writeMessage(canvas, message, img) {
+	function writeMessage(canvas, mousePos, img) {
 	    var context = canvas.getContext('2d');
+	    //Clear canvas
 	    context.clearRect(0, 0, canvas.width, canvas.height);
+	
+	    //Draw our image
 	    context.drawImage(img, 0, 0);
-	    context.font = '15pt Calibri';
-	    context.fillStyle = 'red';
-	    context.fillText(message, 10, 25);
+	
+	    context.beginPath();
+	    context.lineWidth = 1;
+	    context.strokeStyle = "green";
+	    context.moveTo(0, mousePos.y);
+	    context.lineTo(canvas.width, mousePos.y);
+	    context.stroke();
+	
+	    context.strokeStyle = "green";
+	    context.moveTo(mousePos.x, 0);
+	    context.lineTo(mousePos.x, canvas.height);
+	    context.stroke();
+	    //Do text
+	    //context.font = '15pt Calibri';
+	    //context.fillStyle = 'red';
+	    //context.fillText(message, 10, 25);
+	    document.getElementById('downloadCoordinates').className = "btn btn-large disabled";
 	    
-	    if(topLeft != null){
-	    	ctx.fillStyle = "#f00";
-	        ctx.fillRect(topLeft.x-3, topLeft.y-3, 6, 6);
+	    if (firstColony != null) {
+	        ctx.fillStyle = "#f00";
+	        ctx.fillRect(firstColony.x - 3, firstColony.y - 3, 6, 6);
 	    }
-	    if(bottomRight != null){
-	    	ctx.fillStyle = "#00009C";
-	        ctx.fillRect(bottomRight.x-3, bottomRight.y-3, 6, 6);
+	    if (lastColony != null) {
+	        ctx.fillStyle = "#00009C";
+	        ctx.fillRect(lastColony.x - 3, lastColony.y - 3, 6, 6);
+	
+	        //Show download button
+	        
+	    	document.getElementById('downloadCoordinates').className = "btn btn-large";
 	    }
 	}
 	
@@ -83,14 +109,14 @@
 	    var rect = canvas.getBoundingClientRect(),
 	        root = document.documentElement;
 	
-	    
+	
 	    var mouseX, mouseY;
-
-	    if(evt.offsetX) {
+	
+	    if (evt.offsetX) {
 	        mouseX = evt.offsetX;
 	        mouseY = evt.offsetY;
 	    }
-	    else if(evt.layerX) {
+	    else if (evt.layerX) {
 	        mouseX = evt.layerX;
 	        mouseY = evt.layerY;
 	    }
@@ -99,6 +125,6 @@
 	        y: mouseY
 	    };
 	}
-	
-</script>
+
+</script>​
 }

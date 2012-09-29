@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import controllers.Constants;
 
+import java.io.*;
 
 public class ComboboxOpts {
 	public static List<String> fileFormat(){
@@ -50,6 +51,7 @@ public class ComboboxOpts {
 	
 	public static List<String> arrayDefPlates(String arrayDefinitionFile){
 		List<String> tmp = new ArrayList();
+		tmp.add("All plates");
 		
 		File f = new File(Constants.ARRAY_DEF_PATH+"/"+arrayDefinitionFile);
 		for(File plate: f.listFiles()){

@@ -4,207 +4,180 @@
 @implicitFieldConstructor = @{ FieldConstructor(help.twitterBootstrapInput.f) }
 
 @main(title="Low-throughput normalization of colony sizes", nav="normalize") {
-    
+
+	<script>
+		//Some update toggle scripts when the page has loaded
+		$(document).ready(function() {
+			updateSubmitButton();
+			toggleDiv('doLinkage', 'linkageCutoffCG');
+			toggleDiv('doArrayDef', 'arrayDefOptions');
+			arrayDefChanged(document.getElementById('arrayDefPredefined'));
+		});
+	
+	</script>
+
 	@helper.form(action = routes.SGAToolsController.submitNormalizationForm, 'enctype -> "multipart/form-data", 'id -> "normalizationForm", 'class->"form-horizontal") {
-		<fieldset>
-			<input type="hidden" name="job_type" value=1 />
 		
-		<h5>Data input</h5>	
+		
+        <!--Data upload-->
+		<h4>Data input</h4>
+			<fieldset>
+			<!--Job type: 1 for normalization-->
+			<input type="hidden" name="jobType" value=1 />
+			<!--
+				@inputFile(
+            	normalizationForm("arrayDefCustomFile"),
+            	'_label -> "Custom file(s)",
+            	'_id -> "upload01",
+            	'class -> "fileBtn"
+			)-->
+            <!--File format selection-->
 			@select(
-                normalizationForm("file-format"), 
+                normalizationForm("fileFormat"),
                 options = options(ComboboxOpts.fileFormat),
-				'_id -> "file-formats",
                 '_label -> "File format",
                 '_showConstraints -> false,
                 'style -> "width:250px",
                 'helpModal -> "file-formats"
             )
 			
+            <!--Plate files upload-->
             @helper.input(
-            	normalizationForm("sgafiles"), 
+            	normalizationForm("plateFiles"),
             	'_label -> "Plate file(s)", 
             	'uploadwidget->"",
-				'helpModal -> "plate-files") { (id, name, value, args) =>
+			'helpModal -> "plate-files") { (id, name, value, args) =>
             	
-    			@customFileChooser("@id", "@name", true, Html(""))
+    			@customFileChooser("plateFiles", "plateFiles", true, Html(""))
 			} 
-		
+            
+		   <!--Include array definition checkbox-->
+		   @helper.input(
+			normalizationForm("doArrayDef"),
+			'_label -> "Array definition files",
+			'_showConstraints -> false,
+			'helpModal -> "array-definition",
+			'height -> "15px"
+           	){ (id, name, value, args) =>
+			<label class="checkbox" onClick="toggleDiv('@id', 'arrayDefOptions')">
+				<input @if(normalizationForm.get.doArrayDef == true){checked=true}) id="@id" name="@name"  @toHtmlArgs(args) type="checkbox" value="true" style="margin-left:-15px">
+					<span>&nbsp;Include array definition files</span>
+					</label>
+			}
+						
+		   <!--Enclose all array definition options in a div-->
+		   <div id="arrayDefOptions" style="display:none">
+            <!--Array definition files - predefined-->
 			@helper.input(
-				normalizationForm("arrayDef"),
-				'_label -> "Array definition file",
+				normalizationForm("arrayDefPredefined"),
+				'_label -> "",
 				'helpModal -> "array-definition"
 			) { (id, name, value, args) =>
-			
-			    	<select id="arrayDef" onchange="arrayDefChanged(this)">
+				<!--Populate predefined array definitions-->
+			    	<select id="@id" name="@name" onchange="arrayDefChanged(this)" @toHtmlArgs(args)>
 			    		@for(value <- ComboboxOpts.arrayDef){
-			    			<option>@value</option>
+			    			<option @if(value == normalizationForm.get.arrayDefPredefined){selected}>@value</option>
 			    		}
 			    	</select>
-			    		
+			    	<!--Populate their plates-->
 					@for(i <- 0 to ComboboxOpts.arrayDef.size -1){
 						@if(i != 0 & i != 3){
-							<select class="plateCombo hide" id="@ComboboxOpts.arrayDef.get(i)-plates" onchange="arrayDefChanged(document.getElementById('arrayDef'))">
+							<select class="plateCombo hide" id="@ComboboxOpts.arrayDef.get(i)-plates" onchange="arrayDefChanged(document.getElementById('@id'))">
 								@for(plateName <- ComboboxOpts.arrayDefPlates(ComboboxOpts.arrayDef.get(i))){
 									<option>@plateName</option>
 								}
 							</select>
 						}
 					}
-					
-					<button onclick="arrayDefChanged(document.getElementById('arrayDef'))" id="view-plate" class="btn" type="button" data-toggle="modal" data-target="#helpModal">
+				<!--Button which triggers modal viewer-->
+					<button onclick="arrayDefChanged(document.getElementById('@id'))" id="viewPlate" class="btn" type="button" data-toggle="modal" data-target="#helpModal">
 						<i class="icon-file"></i>
 					</button>
 					
 			 }
-			
-			<script type="text/javascript">
-			
-			
-			function labelHelpClicked(containerId){
-				document.getElementById('helpModal-heading').innerHTML = "Help me!"
-				$('#helpModal-body').load('/assets/help/help-containers.html #'+containerId);
+									
+			<!--Array definition file - Custom-->					
+			@helper.input(
+				normalizationForm("arrayDefCustomFile"),
+				'_label -> "",
+				'uploadwidget->"",
+				'cg_id->"arrayDefCustomCG",
+				'cg_style->"display:none"
+				) { (id, name, value, args) =>
+    			@customFileChooser("arrayDefCustomFile", "arrayDefCustomFile", false, toHtmlArgs(args))
 			}
-    			function arrayDefChanged(x){
-    				document.getElementById('view-plate').style.display = "inline";
-    				document.getElementById('array_def_cg').style.display = "inline";
-    				
-    				if(x.selectedIndex == x.length -1){
-    					document.getElementById('array_def_cg').style.display = "inline";
-    					document.getElementById('view-plate').style.display = "none";
-    					//Hide all plate dropdowns expect the one that is selected
-    					for(i=1;i<x.length-1;i++){
-							var value = x.options[i].text + "-plates";
-							document.getElementById(value).style.display = "none";
-						}
-    				}else{
-    					//Not a custom file selection
-    					document.getElementById('array_def_cg').style.display = "none";
-    					if(x.selectedIndex == 0){
-    						document.getElementById('view-plate').style.display = "none";
-    					}else{
-    						//We are dealing with a selection which is not custom and not the dropdown label
-    						var arrayDefValue = x.options[x.selectedIndex].text;
-    						var plateId = arrayDefValue + "-plates";
-    						var plateDropdown = document.getElementById(plateId);
-    						var plateIndex = plateDropdown.selectedIndex;
-    						var plateValue = plateDropdown.options[plateIndex].text;
-    						
-    						var link = "/assets/data/array-definitions/"+arrayDefValue+"/"+plateValue;
-    						
-    							
-    						document.getElementById('helpModal-heading').innerHTML = 
-    							arrayDefValue + " <small>"+plateValue+"</small>"; 
-    							
-    						$('#helpModal-body').CSVToTable(link, 
-    						{
-    							loadingText: 'Loading TSV Data...',
-    							startLine: 5,
-    							separator: "\t",
-    							tableClass:"table table-hover" }
-    						);
-    						
-    					}
-    					
-    					//Hide all plate dropdowns expect the one that is selected
-    					for(i=1;i<x.length-1;i++){
-							var value = x.options[i].text + "-plates";
-							if(x.selectedIndex == i){
-								document.getElementById(value).style.display = "inline";
-							}else{
-								document.getElementById(value).style.display = "none";
-							}
-						}
-    				}
-    				
-    			}
-    			
-    		</script>
-    		
-    		
-    		
-			@helper.input(normalizationForm("array-definition-file"), '_label -> "", 'uploadwidget->"",'cg_id->"array_def_cg", 'cg_style->"display:none") { (id, name, value, args) =>
-    			@customFileChooser("@id", "@name", true, Html(""))
-    			
-			}  
+									
+			</div>
 			
-			<br>
-			<h5>Options</h5>
+				
+			</fieldset>
 			
+			<h4>Options</h4>
+
+			<fieldset>
             @select(
-                normalizationForm("control_borders"), 
+                normalizationForm("controlBorders"),
                 options = options(ComboboxOpts.borders),
-				'_id -> "control_borders",
                 '_label -> "Control borders",
                 '_showConstraints -> false,
-		'helpModal -> "control-borders"
+				'helpModal -> "control-borders",
+				'cg_style -> "display:none"
             )
             @select(
                 normalizationForm("replicates"), 
                 options = options(ComboboxOpts.replicates),
-				'_id -> "replicates",
                 '_label -> "Replicates",
                 '_showConstraints -> false,
 		'helpModal -> "array-replicates"
             )
           	
           	@helper.input(
-           		normalizationForm("do_linkage"),
+           		normalizationForm("doLinkage"),
            		'_label -> "Linkage correction",
            		'_showConstraints -> false,
            		'_help -> "Note—chromosome number/position data for genes must be supplied",
 			'helpModal -> "linkage-correction"
            	){ (id, name, value, args) =>
-           		<label class="checkbox" onClick="updateLinkageField()">
-					<input @if(normalizationForm.get.do_scoring == true){checked=true}) id="@id" name="@name"  @toHtmlArgs(args) type="checkbox" value="true" style="margin-left:-15px" onClick="updateSubmitButton()">
+           		<label class="checkbox" onClick="toggleDiv('@id', 'linkageCutoffCG')">
+					<input @if(normalizationForm.get.doLinkage == true){checked=true}) id="@id" name="@name"  @toHtmlArgs(args) type="checkbox" value="true" style="margin-left:-15px" onClick="updateSubmitButton()">
 					 <span>&nbsp;Remove genes with a specific proximity to one another from the analysis</span>
 				</label>
 			}
 			
            	@helper.input(
-           		normalizationForm("linkage_cutoff"),
+           		normalizationForm("linkageCutoff"),
            		'_label -> "Linkage cutoff",
            		'_showConstraints -> false,
-           		'cg_id -> "linkage_cutoff_cg",
+           		'cg_id -> "linkageCutoffCG",
            		'cg_style -> "display:none"
            	){ (id, name, value, args) =>
            		<div class="input-append">
       				<input class="span2" id="@id" name="@name" @toHtmlArgs(args) size="16" type="text" style="width:175px" 
-      				value="@normalizationForm.get.linkage_cutoff"><span class="add-on">KB</span>
+      				value="@normalizationForm.get.linkageCutoff"><span class="add-on">KB</span>
       			</div>
 			}
 			
 			@helper.input(
-           		normalizationForm("do_scoring"),
+           		normalizationForm("doScoring"),
            		'_label -> "Score results",
            		'_showConstraints -> false,
            		'_help -> "Note—control screens and/or single mutant fitness data must be supplied",
 			'helpModal -> "do-scoring"
            	){ (id, name, value, args) =>
            		<label class="checkbox">
-					<input @if(normalizationForm.get.do_scoring == true){checked=true}) id="@id" name="@name"  @toHtmlArgs(args) type="checkbox" value="true" style="margin-left:-15px" onClick="updateSubmitButton()">
+					<input @if(normalizationForm.get.doScoring == true){checked=true}) id="@id" name="@name"  @toHtmlArgs(args) type="checkbox" value="true" style="margin-left:-15px" onClick="updateSubmitButton()">
 					 <span>&nbsp;Scores the normalized output</span>
 				</label>
 			}
+				
+				
+			</fieldset>
 			
-<!--
-			@helper.input(
-           		normalizationForm("show_plate_heatmaps"),
-           		'_label -> "Show plate heatmaps",
-           		'_showConstraints -> false
-           	){ (id, name, value, args) =>
-           		<label class="checkbox">
-					<input @if(normalizationForm.get.show_plate_heatmaps == true){checked=true}) id="@id" name="@name"  @toHtmlArgs(args) type="checkbox" value="true" style="margin-left:-15px">
-					 <span>&nbsp;Displays heatmaps of plates before/after normalization</span>
-				</label>
-			}
--->
-			
-        </fieldset>
         
         <!--Submit/clear all box-->
         <div class="form-actions">
 		  <button id="nsubmit" type="submit" class="btn btn-primary" onClick="document.getElementById('normalizationForm').className = 'hide';
-		  		document.getElementById('loading').style.display = 'inline';
+		  		document.getElementById('loadingDiv').style.display = 'inline';
 		  		this.disabled=1; document.getElementById('clearall').disabled=1;this.form.submit();">Normalize</button>
 		  <a href="@routes.SGAToolsController.initNormalizationForm()"><button id="clearall" type="button" class="btn">Clear all</button></a>
 		</div>
@@ -213,28 +186,14 @@
 		<!--Javascript helper functions-->
 		<script type="text/javascript">
 			updateSubmitButton()
-			<!--Updates submit button if user wants to score as well-->
-			function updateSubmitButton(){
-				if (document.getElementById('do_scoring').checked == true) {
-				   document.getElementById('nsubmit').innerHTML = 'Normalize and score'
-				} else {
-				    document.getElementById('nsubmit').innerHTML = 'Normalize'
-				} 
-			}
 			
-			function updateLinkageField(){
-				if (document.getElementById('do_linkage').checked == true) {
-				   document.getElementById('linkage_cutoff_cg').style.display = ''
-				} else {
-					document.getElementById('linkage_cutoff_cg').style.display = 'none'
-				} 
-			}
-			
-		</script>
+        </script>
 	} 
 	
-	<div id="loading" style="display:none">
+	<!--Hidden loading div for display when user submits-->
+	<div id="loadingDiv" style="display:none">
 		@loading("Normalizing data")
 	</div>
+
 	
 }

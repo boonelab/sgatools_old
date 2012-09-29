@@ -1,5 +1,9 @@
 package controllers;
 
+
+import play.mvc.Http.MultipartFormData;
+import play.mvc.Http.MultipartFormData.FilePart;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,13 +27,16 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Http.MultipartFormData.FilePart;
-import validators.ColonyFileFormatValidator;
+import validators.BoonelabFileFormatValidator;
 import validators.Help;
-import validators.SGAFileValidator;
+import validators.SGAFileFormatValidator;
 import views.html.*;
 import views.html.normalize.*;
 import views.html.score.*;
 import views.html.imageanalysis.*;
+
+
+import java.io.*;
 
 public class SGAToolsController extends Controller {
 	final static Form<SGAToolsJob> normalizationForm = form(SGAToolsJob.class);
@@ -67,18 +74,27 @@ public class SGAToolsController extends Controller {
 		Form<SGAToolsJob> filledForm = normalizationForm.bindFromRequest();
 		
 		//JOptionPane.showMessageDialog(null, filledForm.data());
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter("/Users/omarwagih/Desktop/job.txt"));
+			out.write(filledForm.data().toString());
+			out.close();
+		} catch (IOException e) {
+		}
 		
 		//Process submission
-		long submission_start_time = new Date().getTime(); //start time
+		long submissionStartTime = new Date().getTime(); //start time
 		
 		//Type of submission
-		Integer job_type = Integer.parseInt(filledForm.bindFromRequest().data().get("job_type"));
+		Integer jobType = Integer.parseInt(filledForm.bindFromRequest().data().get("jobType"));
+		
+		//File format - for validation
+		String fileFormat = filledForm.bindFromRequest().data().get("fileFormat");
 		
 		//Any initial errors?
 		if (filledForm.hasErrors()) {
-			if(job_type==1)
+			if(jobType==1)
 				return badRequest(nform.render(filledForm));
-			if(job_type==2)
+			if(jobType==2)
 				return badRequest(sform.render(filledForm));
 		}
 		
@@ -86,69 +102,67 @@ public class SGAToolsController extends Controller {
 		SGAToolsJob job = filledForm.get();
 		
 		//Get file(s) uploaded
-		List<FilePart> plate_files = request().body().asMultipartFormData().getFiles();
-		FilePart array_definition_file = request().body().asMultipartFormData().getFile("array_definition_file");
+		MultipartFormData body = request().body().asMultipartFormData();
+		List<FilePart> plateFiles = body.getFiles();
+		FilePart arrayDefCustomFile = body.getFile("arrayDefCustomFile");
 		
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter("/Users/omarwagih/Desktop/job.txt"));
+			out.write("arrayDefCustomFile="+arrayDefCustomFile);
+			out.close();
+		} catch (IOException e) {
+		}
 		//Store plate files in a map, mapping their name to File object
-		Map<String, FilePart> plate_files_map = new HashMap<String, FilePart>();
-        for(FilePart fp : plate_files){
-			plate_files_map.put(fp.getFilename(), fp);
+		Map<String, FilePart> plateFilesMap = new HashMap<String, FilePart>();
+        for(FilePart fp : plateFiles){
+			plateFilesMap.put(fp.getFilename(), fp);
         }
         
         //Remove extra non plate files
-        if(array_definition_file != null) plate_files_map.remove(array_definition_file.getFilename());
+        if(arrayDefCustomFile != null) plateFilesMap.remove(arrayDefCustomFile.getFilename());
         
         //To store plate file paths and the actual names of the plate files as comma seprated strings
-        StringBuilder plate_file_paths = new StringBuilder();
-        StringBuilder save_names = new StringBuilder();
+        StringBuilder plateFilePathsCSV = new StringBuilder();
+        StringBuilder plateFileNamesCSV = new StringBuilder();
         
         //Validate the files
         //Have no files been uploaded?
-        if(plate_files_map.isEmpty()){
-        	filledForm.reject("sgafiles", "Missing SGA formatted file(s)");
+        if(plateFilesMap.isEmpty()){
+        	filledForm.reject("plateFiles", "Missing plate file(s)");
         }
 
         //If any errors arise, reject the form submission
         if (filledForm.hasErrors()) {
-        	if(job_type==1)
+        	if(jobType==1)
 				return badRequest(nform.render(filledForm));
-			if(job_type==2)
+			if(jobType==2)
 				return badRequest(sform.render(filledForm));
         }
         
+		
         int fileNumber = 1;
-        
-        List<ColonyFileFormatValidator> colonyFormattedData = new ArrayList();
         //Otherwise, check each file and validate it
-        for(FilePart fp: plate_files_map.values()){
+        for(FilePart fp: plateFilesMap.values()){
         	
-        	//Create colony validator 
-        	ColonyFileFormatValidator colval = new ColonyFileFormatValidator(fp.getFile().getPath(), fp.getFilename(), fileNumber);
-        	try{
-        		Object[] obj = colval.isValid();
-            	boolean isValid = (Boolean) obj[0];
-        		String errorMessage = (String) obj[1];
-        		if(isValid){
-		        	//Valid, skip SGA validator
-		        	colonyFormattedData.add(colval);
-		        	fileNumber++;
-		        	continue;
-		        }
-        	}catch(Exception e){
-        		//Redirect to error page/inform developer FATAL ERROR HERE
-        	}
-        	
-        	//Create validator
-        	SGAFileValidator sgav = new SGAFileValidator(fp.getFile().getPath(), fileNumber);
-        	fileNumber++;
         	
         	//Attempt to validate it
         	try{
-        		Object[] obj = sgav.isValid();
+        		Object[] obj = new Object[]{false, "Failed to validate files"};
+        		//Create validator depending on file format
+    			if(fileFormat.equals(ComboboxOpts.fileFormat().get(0))){
+    				SGAFileFormatValidator sgav = new SGAFileFormatValidator(fp.getFile().getPath(), fileNumber);
+    				obj = sgav.isValid(); 
+    			}else if(fileFormat.equals(ComboboxOpts.fileFormat().get(1))){
+    				BoonelabFileFormatValidator blfv = new BoonelabFileFormatValidator(fp.getFile().getPath(), fp.getFilename(), fileNumber, false);
+    				obj = blfv.isValid(); 
+    			}
+            	//SGAFileValidator sgav = new SGAFileValidator(fp.getFile().getPath(), fileNumber);
+            	fileNumber++;
+            	
             	boolean isValid = (Boolean) obj[0];
         		String errorMessage = (String) obj[1];
         		if(!isValid){
-        			filledForm.reject("sgafiles", "Error in file "+fp.getFilename() +": "+errorMessage);
+        			filledForm.reject("plateFiles", "Error in file "+fp.getFilename() +": "+errorMessage);
         			break;
 		        }
         	}catch(Exception e){
@@ -166,83 +180,84 @@ public class SGAToolsController extends Controller {
     		*/
     		
     		//Add plate file paths
-    		plate_file_paths.append(fp.getFile().getPath()+",");
-    		save_names.append(fp.getFilename()+",");
+    		plateFilePathsCSV.append(fp.getFile().getPath()+",");
+    		plateFileNamesCSV.append(fp.getFilename()+",");
         }
         
-        //Process colony formatted files if available
-        if(colonyFormattedData.size() == plate_files_map.size()){
-        	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        	Date date = new Date();
-        	
-        	String writePath = colonyFormattedData.get(0).FILE_PATH;
-			try{
-				// Create file 
-				FileWriter fstream = new FileWriter(writePath);
-				BufferedWriter out = new BufferedWriter(fstream);
-				out.write("#Converted from 3-column format by SGATools 1.0 on "+dateFormat.format(date)+"\n");
-				out.write("@HD\tVN:1.0.0\tIA:NA\n");
-				
-				//Write info on merged plates
-				for(ColonyFileFormatValidator cfd: colonyFormattedData){
-					out.write("# Plate ID "+cfd.FILE_NUMBER+" - "+cfd.FILE_NAME+"\n");
+		//Array definitions
+		boolean doArrayDef = Boolean.TRUE.equals(job.doArrayDef);
+		StringBuilder arrayDefFilePathsCSV = new StringBuilder();
+		List<String> adList = ComboboxOpts.arrayDef();
+		if(doArrayDef){
+			//Custom file -ERROR HERE FILE NOT UPLOADING
+			if(adList.indexOf(job.arrayDefPredefined) == adList.size()-1){
+				if(arrayDefCustomFile == null){
+					filledForm.reject("arrayDefCustomFile", "Missing array definition file");
+				}else{
+					arrayDefFilePathsCSV.append(arrayDefCustomFile.getFile().getPath());
+				}
+			}
+			//Predefined array def
+			else if(job.selectedArrayDefPlate != null){
+				String arrayDefDir = Constants.ARRAY_DEF_PATH + "/" + job.selectedArrayDefPlate;
+				List<String> adPlatesList = ComboboxOpts.arrayDefPlates(job.arrayDefPredefined);
+				if(adPlatesList.indexOf(job.selectedArrayDefPlate) == 0){
+					//All plates
+					for(int i=1; i<adPlatesList.size(); i++){
+						arrayDefFilePathsCSV.append(arrayDefDir + "/" + adPlatesList.get(i) + ",");
+					}
+				}else{
+					//One plate
+					arrayDefFilePathsCSV.append(arrayDefDir + "/" + job.selectedArrayDefPlate);
 				}
 				
-				out.write("@PL\tNM:3-column converted plate data\n");
-				
-				for(ColonyFileFormatValidator cfd: colonyFormattedData){
-					for(String line: cfd.FILE_DATA){
-	        			out.write(line+"\n");
-	        		}
-	        	}
-				//Close the output stream
-				out.close();
-				
-				plate_file_paths = new StringBuilder(writePath);
-				save_names = new StringBuilder("colony_plates.txt,");
-			}catch (Exception e){//Catch exception if any
-				
 			}
-        	
-        }else if(colonyFormattedData.size() != 0 && colonyFormattedData.size() < plate_files_map.size()){
-        	//Error
-        	filledForm.reject("sgafiles", "Cannot have mix of SGA formatted files and colony formatted files");
-        }
-        
-        
+			//Selected to do array def, but did not select anything from the dropdown
+			else{
+				filledForm.reject("arrayDefPredefined", "Please select a predefined array definition or upload your own");
+			}
+		}
+		
         //If any errors arise, reject the form submission
         if (filledForm.hasErrors()) {
-        	if(job_type==1)
+        	if(jobType==1)
 				return badRequest(nform.render(filledForm));
-			if(job_type==2)
+			if(jobType==2)
 				return badRequest(sform.render(filledForm));
         }
         
         //Run script here
         
         //Command to be run from shell
-        String cmd =  "Rscript "+ Constants.RSCRIPT_PATH +  " -i " +plate_file_paths+  " -s " + save_names.toString().replaceAll("\\s", "%20") 
-        		+ " -o " +Constants.JOBOUTPUTDIR_PATH + " -d savefile " + "-b "+job.control_borders
-        		+ " -r "+job.replicates 
-        		+ " -j "+UUID.randomUUID();
-        
+        String cmd =  "Rscript "+ Constants.RSCRIPT_PATH
+				+ " --inputfiles " + plateFilePathsCSV
+				+ " --savenames " + plateFileNamesCSV.toString().replaceAll("\\s", "%20")
+        		+ " --outputdir " + Constants.JOBOUTPUTDIR_PATH
+				+ " --handleout " + "savefile"
+				+ " --cborder " + job.controlBorders
+        		+ " --replicates " + job.replicates 
+        		+ " --jobid " + UUID.randomUUID();
+		
+        //Do we have array definition files?
+		if(doArrayDef){
+			cmd = cmd +" --doarraydef true";
+			cmd = cmd +" --arrdefpaths "+arrayDefFilePathsCSV.toString().replaceAll("\\s", "%20");
+		}
+		
         //Are we doing normalization alone or scoring as well?
-        if(job_type == 1){
-        	if(Boolean.TRUE.equals(job.do_scoring)){
-        		cmd = cmd +" -t both ";
+        if(jobType == 1){
+        	if(Boolean.TRUE.equals(job.doScoring)){
+        		cmd = cmd + " --jobtype both ";
         	}else{
-	        	cmd = cmd +" -t normalize ";
+	        	cmd = cmd + " --jobtype normalize ";
 	        }
-        }else if(job_type == 2){
-        	cmd = cmd +" -t score ";
+        }else if(jobType == 2){
+        	cmd = cmd +" --jobtype score ";
         }
        
-        //Are we doing heat-maps?
-        if(Boolean.TRUE.equals(job.show_plate_heatmaps)){
-        	cmd = cmd +" -m yes";
-        }else{
-        	cmd = cmd +" -m no";
-        }
+        //Are always do heatmaps
+		cmd = cmd +" --doheatmaps yes";
+		
         
         /*
         JFrame f = new JFrame();
@@ -300,21 +315,20 @@ public class SGAToolsController extends Controller {
         	//Handle it/redirect to error page/report TODO
         }
         
-        job.plotted_data_path = resultFile.getParentFile().getName() + "/"+heatmapFile.getName();
-        job.experiment_name = null;//for now
-        job.output_path = resultFile.getParentFile().getName() + "/"+resultFile.getName();
-        job.plate_files = "("+plate_files_map.size()+") "+save_names.substring(0,save_names.length()-1).toString().replaceAll(",", ", ");
+        //job.plotted_data_path = resultFile.getParentFile().getName() + "/"+heatmapFile.getName();
+        job.outputPath = resultFile.getParentFile().getName() + "/"+resultFile.getName();
+        job.plateFileNamesCSV = "("+plateFilesMap.size()+") "+plateFileNamesCSV.substring(0,plateFileNamesCSV.length()-1).toString().replaceAll(",", ", ");
         
         //Save time elapsed
-        long submission_end_time = new Date().getTime(); //end time
-        long milliseconds = submission_end_time - submission_start_time; //check different
+        long submissionEndTime = new Date().getTime(); //end time
+        long milliseconds = submissionEndTime - submissionStartTime; //check different
         int seconds = (int) (milliseconds / 1000) % 60 ;
         int minutes = (int) ((milliseconds / (1000*60)) % 60);
-        job.time_elapsed =  minutes + " mins "+ seconds + " secs";
-        
-        if(job_type==1)
+        job.timeElapsed =  minutes + " mins "+ seconds + " secs";
+	
+        if(jobType==1)
 			return ok(nsummary.render(filledForm.get()));
-        else if(job_type==2)
+        else if(jobType==2)
 			return ok(ssummary.render(filledForm.get()));
         else
         	return TODO;

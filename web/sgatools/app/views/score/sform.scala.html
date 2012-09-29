@@ -29,29 +29,18 @@
            		
 			}
 			
-			@helper.input(
-           		scoringForm("average_scores"),
-           		'_label -> "Average scores",
-           		'_showConstraints -> false,
-           		'height -> "30px"
-           	){ (id, name, value, args) =>
-           		<label class="checkbox">
-					<input @if(scoringForm.get.average_scores == true){checked=true}) id="@id" name="@name"  @toHtmlArgs(args) type="checkbox" value="true" style="margin-left:-15px">
-					 <span>&nbsp;Returns the average of scores in the same replicate group</span>
-				</label>
-			}
-			
+			<!--
 			@helper.input(
            		scoringForm("show_plate_heatmaps"),
            		'_label -> "Show plate heatmaps",
            		'_showConstraints -> false
            	){ (id, name, value, args) =>
            		<label class="checkbox">
-					<input @if(scoringForm.get.show_plate_heatmaps == true){checked=true}) id="@id" name="@name"  @toHtmlArgs(args) type="checkbox" value="true" style="margin-left:-15px">
+					<input if(scoringForm.get.showPlateHeatmaps == true){checked=true}) id="@id" name="@name"  @toHtmlArgs(args) type="checkbox" value="true" style="margin-left:-15px">
 					 <span>&nbsp;Display heatmaps of scored plate(s)</span>
 				</label>
 			}
-			
+			-->
 			
         </fieldset>
         

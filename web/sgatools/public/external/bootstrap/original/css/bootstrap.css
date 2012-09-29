@@ -888,9 +888,13 @@ form {
 }
 
 fieldset {
-  padding: 0;
+  padding: 19px 20px 20px;
   margin: 0;
   border: 0;
+  background-color: rgba(245, 245, 245, 0.2);
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  
 }
 
 legend {
@@ -1435,9 +1439,11 @@ select:focus:required:invalid:focus {
   margin-top: 20px;
   margin-bottom: 20px;
   /*background-color: #f5f5f5;*/
-  background-color: rgba(245, 245, 245, 0.3);
+  background-color: rgba(245, 245, 245, 0.2);
   border-top: 1px solid #e5e5e5;
   *zoom: 1;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
 }
 
 .form-actions:before,
@@ -1728,6 +1734,7 @@ legend + .control-group {
   padding-top: 5px;
   text-align: right;
 }
+
 
 .form-horizontal .controls {
   *display: inline-block;
@@ -2843,6 +2850,7 @@ omarwagih
   padding: 19px;
   margin-bottom: 20px;
   background-color: #f5f5f5;
+  background-color: rgba(245, 245, 245, 0.3);
   border: 1px solid #e3e3e3;
   -webkit-border-radius: 4px;
      -moz-border-radius: 4px;

@@ -1,44 +1,54 @@
 package models;
 
 import validators.Help;
+import javax.validation.*;
 
+import play.data.validation.Constraints.*;
 public class SGAToolsJob {
 	
 	//General variables
-	public Integer job_type;
-	public String file_format;
-	public String experiment_name;
-	public String time_elapsed;
-	public String plate_files;
-	public String array_definition_file;
-	public String output_path;//For script output
-	public Boolean show_plate_heatmaps;//For heatmap
-	public String plotted_data_path;//For heatmap data
+	public String timeElapsed;
+	public Integer jobType;
+	public String fileFormat;
+	public String plateFileNamesCSV;
+	public String outputPath;//For script output
+	public String plottedDataPath;//For heatmap data
 	
 	//Specific to normalization
-	public Integer control_borders;
+	public Boolean doArrayDef;
+	public String arrayDefPredefined;
+	public String selectedArrayDefPlate;
+	public String arrayDefCustomFile;
+	
+	public Integer controlBorders;
 	public Integer replicates;
-	public Integer linkage_cutoff;
-	public Boolean do_scoring;
+	public Boolean doLinkage;
+	public String linkageCutoff;
+	public Boolean doScoring;
+	
 	
 	//Specific to scoring
-	public String scoring_function;
-	public Boolean average_scores;
+	public String scoringFunction;
 	
 	public SGAToolsJob(){}
 	
-	public SGAToolsJob(Integer job_type){
+	public SGAToolsJob(Integer jobType){
 		//Initialize
-		this.job_type = job_type;
-		this.file_format = ComboboxOpts.fileFormat().get(0);
+		this.jobType = jobType;
+		this.fileFormat = ComboboxOpts.fileFormat().get(0);
 		
-		this.control_borders = 2;
+		this.doArrayDef = false;
+		this.arrayDefPredefined = ComboboxOpts.arrayDef().get(0);
+		this.selectedArrayDefPlate = "";
+		
+		this.controlBorders = 0;
 		this.replicates = 4;
-		this.linkage_cutoff = 200;
-		this.do_scoring = false;
-		this.show_plate_heatmaps = false;
+		this.doLinkage = false;
+		this.linkageCutoff = "200";
+		this.doScoring = false;
 		
-		this.scoring_function = "";
-		this.average_scores = false;
+		this.scoringFunction = "";
+		
+		this.arrayDefCustomFile = "";
 	}
 }
